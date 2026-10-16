@@ -1,26 +1,36 @@
+using BeautySalon.Web.Data;
+using BeautySalon.Web.Services;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorPages();
+// MVC
+builder.Services.AddControllersWithViews();
+
+// База данных PostgreSQL
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Наш сервис
+builder.Services.AddScoped<ISalonService, SalonService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Обработка ошибок
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
+app.UseStaticFiles();   // обязательно — для css, картинок, логотипа
 app.UseRouting();
 
-app.UseAuthorization();
+// Никаких app.UseAuthentication() и app.UseAuthorization() — они не нужны
 
-app.MapStaticAssets();
-app.MapRazorPages()
-   .WithStaticAssets();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

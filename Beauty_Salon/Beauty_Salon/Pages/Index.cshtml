@@ -1,10 +1,99 @@
-﻿@page
-@model IndexModel
+﻿@model BeautySalon.Web.ViewModels.HomeIndexViewModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Главная";
+    var s = Model.Settings;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@* ===== Слой шапки (header) ===== *@
+<header class="header">
+    <div class="header-left">
+        <img src="@s.LogoPath" alt="Эмблема" class="logo" />
+        <div class="salon-info">
+            <h1>@s.SalonName</h1>
+            <p>@s.Phone</p>
+            <p>@s.Address</p>
+        </div>
+    </div>
+    <div class="header-right">
+        <a asp-controller="Appointment" asp-action="Create" class="btn-book">Записаться</a>
+    </div>
+</header>
+
+@* ===== Слой фона (background) ===== *@
+<section class="background" style="background-image: url('@s.BackgroundImagePath');">
+</section>
+
+@* ===== Слой меню (menu) ===== *@
+<nav class="menu">
+    <a href="#grafic">График работы</a>
+    <a href="#masters">Карточки мастеров</a>
+    <a href="#pricelist">Прайс-лист</a>
+</nav>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="error">@Model.ErrorMessage</div>
+}
+
+@* ===== Слой графика работы (grafic) ===== *@
+<section id="grafic" class="section">
+    <h2>График работы</h2>
+    <table class="schedule-table">
+        @foreach (var day in Model.Schedules)
+        {
+            <tr>
+                <td>@day.DayOfWeek</td>
+                <td>@(day.IsDayOff ? "Выходной" : day.WorkingHours)</td>
+            </tr>
+        }
+    </table>
+</section>
+
+@* ===== Слой карточек мастеров (masters) ===== *@
+<section id="masters" class="section">
+    <h2>Наши мастера</h2>
+    <div class="masters-grid">
+        @foreach (var m in Model.Masters)
+        {
+            <div class="master-card">
+                <img src="@m.PhotoPath" alt="@m.FullName" />
+                <h3>@m.FullName</h3>
+                <p class="spec">@m.Specialization</p>
+                <p class="sched">@m.Schedule</p>
+            </div>
+        }
+    </div>
+</section>
+
+@* ===== Слой прайс-листа (praicList) ===== *@
+<section id="pricelist" class="section">
+    <h2>Прайс-лист</h2>
+    <table class="price-table">
+        <thead>
+            <tr><th>Услуга</th><th>Категория</th><th>Цена</th><th>Длительность</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var svc in Model.Services)
+            {
+                <tr>
+                    <td>@svc.Name</td>
+                    <td>@svc.Category</td>
+                    <td>@svc.Price.ToString("N0") ₽</td>
+                    <td>@svc.Duration мин</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+
+@* ===== Слой нижний (footer) ===== *@
+<footer class="footer">
+    <p>@s.SalonName — @s.Address</p>
+    <p>Телефон: @s.Phone</p>
+    <nav>
+        <a href="#grafic">График работы</a> |
+        <a href="#masters">Мастера</a> |
+        <a href="#pricelist">Прайс-лист</a>
+    </nav>
+    <p>&copy; @DateTime.Now.Year Все права защищены.</p>
+</footer>

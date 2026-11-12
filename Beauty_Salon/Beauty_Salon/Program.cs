@@ -1,22 +1,24 @@
 using BeautySalon.Web.Data;
 using BeautySalon.Web.Services;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore; // Необходимо для UseNpgsql
 
 var builder = WebApplication.CreateBuilder(args);
 
-// MVC
+
+// Подключение MVC (Контроллеры и Представления)
 builder.Services.AddControllersWithViews();
 
-// База данных PostgreSQL
+// Подключение базы данных PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Наш сервис
+// Регистрация вашего сервиса бизнес-логики
 builder.Services.AddScoped<ISalonService, SalonService>();
 
 var app = builder.Build();
 
-// Обработка ошибок
+
+// Обработка ошибок (включается только в Production)
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -24,10 +26,14 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();   // обязательно — для css, картинок, логотипа
+
+// Обязательно для загрузки css, js, картинок, логотипа из папки wwwroot
+app.UseStaticFiles();
+
+// Маршрутизация запросов
 app.UseRouting();
 
-// Никаких app.UseAuthentication() и app.UseAuthorization() — они не нужны
+
 
 app.MapControllerRoute(
     name: "default",

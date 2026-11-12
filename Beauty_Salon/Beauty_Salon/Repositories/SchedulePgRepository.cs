@@ -1,12 +1,4 @@
 ﻿using BeautySalon.Web.Models;
-
-namespace BeautySalon.Web.Repositories
-{
-    public class SchedulePgRepository
-    {
-    }
-}
-фusing BeautySalon.Web.Models;
 using Npgsql;
 using SalonBagira.Models;
 using System;

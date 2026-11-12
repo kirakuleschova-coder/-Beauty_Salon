@@ -1,0 +1,468 @@
+﻿@model BeautySalon.Web.ViewModels.HomeIndexViewModel
+@{
+    ViewData["Title"] = "Главная";
+    Layout = null; // Отключаем стандартный макет
+    var s = Model.Settings;
+}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @s.SalonName</title>
+
+    <!-- Подключение шрифтов (вынесено из блока style) -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* ================= ВСЕ СТИЛИ ВНУТРИ ================= */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #fcfcfc;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: #b8860b;
+            transition: color 0.3s ease;
+        }
+
+            a:hover {
+                color: #8b6508;
+            }
+
+        /* ШАПКА */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+            .header-left .logo {
+                height: 60px;
+                width: auto;
+                object-fit: contain;
+            }
+
+        .salon-info h1 {
+            margin: 0;
+            font-size: 26px;
+            color: #222;
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 1px;
+        }
+
+        .salon-info p {
+            margin: 2px 0 0 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .btn-book {
+            background-color: #b8860b;
+            color: #fff !important;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3);
+            display: inline-block;
+        }
+
+            .btn-book:hover {
+                background-color: #966d09;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(184, 134, 11, 0.4);
+            }
+
+        /* ФОН */
+        .background {
+            width: 100%;
+            height: 450px;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-color: #ddd;
+            position: relative;
+        }
+
+            .background::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.2);
+            }
+
+        /* МЕНЮ */
+        .menu {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            background-color: #1a1a1a;
+            padding: 18px 0;
+            position: sticky;
+            top: 90px;
+            z-index: 999;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+            .menu a {
+                color: #fff;
+                font-weight: 400;
+                font-size: 15px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                transition: color 0.3s;
+            }
+
+                .menu a:hover {
+                    color: #d4af37;
+                }
+
+        /* ОШИБКИ */
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            margin: 20px 5%;
+            border-radius: 8px;
+            border-left: 5px solid #dc3545;
+            text-align: center;
+        }
+
+        /* СЕКЦИИ */
+        .section {
+            padding: 80px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+            .section h2 {
+                text-align: center;
+                font-size: 36px;
+                margin-bottom: 50px;
+                color: #222;
+                font-family: 'Playfair Display', serif;
+            }
+
+                .section h2::after {
+                    content: '';
+                    display: block;
+                    width: 60px;
+                    height: 2px;
+                    background-color: #b8860b;
+                    margin: 15px auto 0;
+                }
+
+        /* ГРАФИК */
+        .schedule-table {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+            .schedule-table tr {
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+                .schedule-table tr:nth-child(even) {
+                    background-color: #fafafa;
+                }
+
+            .schedule-table td {
+                padding: 18px 25px;
+                font-size: 16px;
+            }
+
+                .schedule-table td:first-child {
+                    font-weight: 500;
+                    color: #333;
+                    width: 40%;
+                }
+
+                .schedule-table td:last-child {
+                    color: #666;
+                }
+
+        /* МАСТЕРА */
+        .masters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+        }
+
+        .master-card {
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            text-align: center;
+            padding-bottom: 25px;
+        }
+
+            .master-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            }
+
+            .master-card img {
+                width: 100%;
+                height: 350px;
+                object-fit: cover;
+                background-color: #eee;
+                margin-bottom: 20px;
+            }
+
+            .master-card h3 {
+                margin: 0 0 10px 0;
+                font-size: 22px;
+                color: #222;
+                font-family: 'Playfair Display', serif;
+            }
+
+            .master-card .spec {
+                color: #b8860b;
+                font-weight: 500;
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 10px;
+            }
+
+            .master-card .sched {
+                color: #777;
+                font-size: 14px;
+                margin: 0;
+            }
+
+        /* ПРАЙС */
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+            .price-table thead {
+                background-color: #1a1a1a;
+                color: #fff;
+            }
+
+            .price-table th {
+                padding: 20px;
+                text-align: left;
+                font-weight: 400;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                font-size: 14px;
+            }
+
+            .price-table td {
+                padding: 18px 20px;
+                border-bottom: 1px solid #f0f0f0;
+                font-size: 15px;
+                color: #444;
+            }
+
+            .price-table tbody tr:hover {
+                background-color: #fafafa;
+            }
+
+            .price-table td:nth-child(3) {
+                font-weight: 500;
+                color: #b8860b;
+                white-space: nowrap;
+            }
+
+        /* ПОДВАЛ */
+        .footer {
+            background-color: #1a1a1a;
+            color: #888;
+            text-align: center;
+            padding: 60px 20px 30px;
+            margin-top: 80px;
+        }
+
+            .footer p {
+                margin: 8px 0;
+                font-size: 15px;
+            }
+
+                .footer p:first-child {
+                    color: #fff;
+                    font-size: 20px;
+                    font-family: 'Playfair Display', serif;
+                    margin-bottom: 15px;
+                }
+
+            .footer nav {
+                margin: 25px 0;
+            }
+
+                .footer nav a {
+                    color: #ccc;
+                    margin: 0 15px;
+                    font-size: 14px;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }
+
+                    .footer nav a:hover {
+                        color: #b8860b;
+                    }
+
+            .footer p:last-child {
+                font-size: 13px;
+                color: #555;
+                margin-top: 30px;
+                border-top: 1px solid #333;
+                padding-top: 20px;
+            }
+    </style>
+</head>
+<body>
+
+    <!-- Слой шапки (header) -->
+    <header class="header">
+        <div class="header-left">
+            <!-- ТУТ ЛОКАЛЬНОЕ ФОТО ЛОГОТИПА -->
+            <img src="/images/logo.png" alt="Эмблема" class="logo" onerror="this.src='https://via.placeholder.com/60x60?text=Logo'" />
+            <div class="salon-info">
+                <h1>@s.SalonName</h1>
+                <p>@s.Phone</p>
+                <p>@s.Address</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <a asp-controller="Appointment" asp-action="Create" class="btn-book">Записаться</a>
+        </div>
+    </header>
+
+    <!-- Слой фона -->
+    <!-- ТУТ ЛОКАЛЬНОЕ ФОТО ФОНА -->
+    <section class="background" style="background-image: url('/images/background.jpg');">
+    </section>
+
+    <!-- Слой меню -->
+    <nav class="menu">
+        <a href="#grafic">График работы</a>
+        <a href="#masters">Карточки мастеров</a>
+        <a href="#pricelist">Прайс-лист</a>
+    </nav>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="error">@Model.ErrorMessage</div>
+    }
+
+    <!-- График -->
+    <section id="grafic" class="section">
+        <h2>График работы</h2>
+        <table class="schedule-table">
+            @foreach (var day in Model.Schedules)
+            {
+                <tr>
+                    <td>@day.DayOfWeek</td>
+                    <td>
+                        @if (day.IsDayOff)
+                        {
+                            <span>Выходной</span>
+                        }
+                        else
+                        {
+                            <span>@day.OpenTime.ToString(@"hh\:mm") — @day.CloseTime.ToString(@"hh\:mm")</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+    </section>
+
+    <!-- Мастера -->
+    <section id="masters" class="section">
+        <h2>Наши мастера</h2>
+        <div class="masters-grid">
+            @{
+                // Счетчик для выбора фото по кругу
+                int i = 1;
+            }
+            @foreach (var m in Model.Masters)
+            {
+                var photoPath = $"/images/master{i}.jpg"; // Берем фото из локальной папки
+                                                          <div class="master-card">
+                                                              <!-- ТУТ ЛОКАЛЬНЫЕ ФОТО МАСТЕРОВ -->
+                                                              <img src="@photoPath" alt="@m.FullName" onerror="this.src='https://via.placeholder.com/300x350?text=Master'" />
+                                                              <h3>@m.FullName</h3>
+                                                              <p class="spec">@m.Specialization</p>
+                                                              <p class="sched">@m.Schedule</p>
+                                                          </div>
+                i++; // Увеличиваем счетчик. Если картинок только 3, то 4-й мастер получит master4.jpg (убедитесь, что он есть, или смените логику)
+            }
+        </div>
+    </section>
+
+    <!-- Прайс-лист -->
+    <section id="pricelist" class="section">
+        <h2>Прайс-лист</h2>
+        <table class="price-table">
+            <thead>
+                <tr><th>Услуга</th><th>Категория</th><th>Цена</th><th>Длительность</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var svc in Model.Services)
+                {
+                    <tr>
+                        <td>@svc.Name</td>
+                        <td>@svc.Category</td>
+                        <td>@svc.Price.ToString("N0") ₽</td>
+                        <td>@svc.Duration мин</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Подвал -->
+    <footer class="footer">
+        <p>@s.SalonName — @s.Address</p>
+        <p>Телефон: @s.Phone</p>
+        <nav>
+            <a href="#grafic">График работы</a> |
+            <a href="#masters">Мастера</a> |
+            <a href="#pricelist">Прайс-лист</a>
+        </nav>
+        <p>&copy; @DateTime.Now.Year Все права защищены.</p>
+    </footer>
+
+</body>
+</html>

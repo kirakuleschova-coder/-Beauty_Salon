@@ -1,9 +1,13 @@
-﻿namespace BeautySalon.Web.Models;
+﻿using System;
 
-public class Schedule
+namespace BeautySalon.Web.Models
 {
-    public int Id { get; set; }
-    public string DayOfWeek { get; set; } = string.Empty; // Понедельник...Воскресенье
-    public string WorkingHours { get; set; } = string.Empty; // "09:00 – 20:00"
-    public bool IsDayOff { get; set; }
+    public class Schedule
+    {
+        public int Id { get; set; }
+        public string DayOfWeek { get; set; }
+        public TimeSpan OpenTime { get; set; }
+        public TimeSpan CloseTime { get; set; }
+        public bool IsDayOff { get; set; }
+    }
 }
